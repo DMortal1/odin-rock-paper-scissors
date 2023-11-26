@@ -1,8 +1,4 @@
-while(1) {
-    let playerChoice = getPlayerChoice();
-    if(playerChoice == "null") {continue;}
-    let computerChoice = getComputerChoice();
-}
+playGame();
 
 function getPlayerChoice() {
     let choice = prompt("Type Rock, Paper or Scissors","rock").toLowerCase();
@@ -55,4 +51,66 @@ function getComputerChoice() {
     }
 
     return choice;
+}
+
+function getResult() {
+    let playerChoice = getPlayerChoice();
+    if(playerChoice == "null") {return;}
+    let computerChoice = getComputerChoice();
+
+    let losesTo = {
+        "Rock" : "Paper",
+        "Paper" : "Scissors",
+        "Scissors" : "Rock"
+    }
+
+    let result;
+
+    if(playerChoice == computerChoice) {
+        result = "draw";
+    } else if(playerChoice == losesTo[computerChoice]) {
+        result = "win";
+    } else {
+        result = "loss";
+    }
+
+    confirm(`The result is a ${result}.`);
+
+    return result;
+}
+
+function playRound(scores) {
+    let result = getResult();
+    switch(result) {
+        case "draw": break;
+        case "win": ++scores.playerScore; break;
+        case "loss": ++scores.computerScore; break;
+    }
+
+    confirm(`Player Score: ${scores.playerScore}\nCPU Score: ${scores.computerScore}`)
+}
+
+function playGame() {
+    let scores = {
+        playerScore : 0,
+        computerScore : 0
+    }
+
+    let winner = "nobody";
+    while(winner == "nobody") {
+        playRound(scores);
+
+        if(scores.playerScore == 5) {
+            confirm("The player has won!");
+            winner = "Player";
+        } else if(scores.computerScore == 5) {
+            confirm("The CPU has won!");
+            winner = "CPU";
+        } else {
+            winner = "nobody";
+        }
+    }
+
+    alert("Play Again?");
+    window.location.reload();
 }
