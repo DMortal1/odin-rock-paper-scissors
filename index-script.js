@@ -1,116 +1,151 @@
-playGame();
+// playGame();
 
-function getPlayerChoice() {
-    let choice = prompt("Type Rock, Paper or Scissors","rock").toLowerCase();
+const narratorText = document.querySelector("#narrator");
 
-    switch(choice) {
-        case "rock": case "rocks":
-            choice = "Rock";
+const playerButtons = document.querySelector("#player-choose");
+playerButtons.addEventListener("mousedown", playRound)
+
+const playerDisplay = document.querySelector("#player-choice");
+const computerDisplay = document.querySelector("#cpu-choice");
+
+const playerScore = document.querySelector("#player-score");
+const computerScore = document.querySelector("#cpu-score");
+
+const restartButton = document.querySelector("#restart");
+restartButton.addEventListener("mousedown", resetDoc);
+
+function playRound() {
+    getResult();
+    checkWin();
+}
+
+function resetDoc() {
+    playerDisplay.innerHTML = "?";
+    computerDisplay.innerHTML = "?";
+
+    playerScore.innerHTML = "0";
+    computerScore.innerHTML = "0";
+
+    narratorText.innerHTML = "First to score five points wins!";
+    playerButtons.style["pointer-events"] = "all";
+}
+
+function checkWin() {
+    if( playerScore.innerHTML=="5" ) {
+        narratorText.innerHTML = "Player has won!";
+        playerButtons.style["pointer-events"] = "none";
+    } else if( computerScore.innerHTML=="5" ) {
+        narratorText.innerHTML = "CPU has won!";
+        playerButtons.style["pointer-events"] = "none";
+    }
+}
+
+function getEmoji(name) {
+    switch(name) {
+        case "rock":
+            return "🪨";
+        case "paper":
+            return "📄";
+        case "scissors":
+            return "✂️";
+        case "lizard":
+            return "🦎";
+        case "spock":
+            return "🖖🏻";
+        default:
+            return "ERROR";
+    }
+}
+
+function updateScores(result, playerChoice, computerChoice){
+    switch(result) {
+        case "win":
+            playerScore.innerHTML = (+(playerScore.innerHTML) + 1).toString();
+            narratorText.innerHTML = `${firstCapital(playerChoice)} beats ${firstCapital(computerChoice)}. Player wins!`;
             break;
-        case "paper": case "papers":
-            choice = "Paper";
+        case "loss":
+            computerScore.innerHTML = (+(computerScore.innerHTML) + 1).toString();
+            narratorText.innerHTML = `${firstCapital(computerChoice)} beats ${firstCapital(playerChoice)}. CPU wins!`;
             break;
-        case "scissor": case "scissors":
-            choice = "Scissors";
+        case "draw":
+            narratorText.innerHTML = `It's a draw!`;
             break;
         default:
-            choice = "null";
+            break;
     }
+}
 
-    if(choice != "null") {
-        confirm(`You have chosen ${choice}.`);
-    } else {
-        confirm("Please type one of the three mentioned choices!");
-    }
+function firstCapital(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function getPlayerChoice() {
+    let choice = event.target.id;
+    if(choice=="player-choose") {return "ERROR";}
+    playerDisplay.innerHTML = getEmoji(choice);
+
+    // alert(`Player choice is ${choice}.`);
 
     return choice;
 }
 
 function getComputerChoice() {
-    let choice = Math.floor(Math.random()*3 + 1);
-    
+    let choice = Math.floor(Math.random()*5 + 1);
+
     switch(choice) {
         case 1:
-            choice = "Rock";
+            choice = "rock";
             break;
         case 2:
-            choice = "Paper";
+            choice = "paper";
             break;
         case 3:
-            choice = "Scissors";
+            choice = "scissors";
+            break;
+        case 4:
+            choice = "lizard";
+            break;
+        case 5:
+            choice = "spock";
             break;
         default:
             choice = "null";
             break;
     }
 
-    if(choice != "null") {
-        confirm(`CPU has chosen ${choice}.`);
-    } else {
-        confirm("ERROR! CPU choice is null");
-    }
+    computerDisplay.innerHTML = getEmoji(choice);
+
+    if(choice == "null") { confirm("ERROR! CPU choice is null"); }
+
+    // alert(`Computer choice is ${choice}.`);
 
     return choice;
 }
 
 function getResult() {
     let playerChoice = getPlayerChoice();
-    if(playerChoice == "null") {return;}
+    if(playerChoice=="ERROR") {return;}
     let computerChoice = getComputerChoice();
 
     let losesTo = {
-        "Rock" : "Paper",
-        "Paper" : "Scissors",
-        "Scissors" : "Rock"
+        "rock" : ["paper","spock"],
+        "paper" : ["scissors","lizard"],
+        "scissors" : ["rock","spock"],
+        "lizard" : ["rock","scissors"],
+        "spock" : ["paper","lizard"],
     }
 
-    let result;
+    let result="";
 
-    if(playerChoice == computerChoice) {
+    if( playerChoice == computerChoice ) {
         result = "draw";
-    } else if(playerChoice == losesTo[computerChoice]) {
+    } else if( (losesTo[computerChoice]).includes(playerChoice) ) {
         result = "win";
     } else {
         result = "loss";
     }
 
-    confirm(`The result is a ${result}.`);
+    // alert(`The result is a ${result}.`);
 
-    return result;
-}
-
-function playRound(scores) {
-    let result = getResult();
-    switch(result) {
-        case "draw": break;
-        case "win": ++scores.playerScore; break;
-        case "loss": ++scores.computerScore; break;
-    }
-
-    confirm(`Player Score: ${scores.playerScore}\nCPU Score: ${scores.computerScore}`)
-}
-
-function playGame() {
-    let scores = {
-        playerScore : 0,
-        computerScore : 0
-    }
-
-    let winner = "nobody";
-    while(winner == "nobody") {
-        playRound(scores);
-
-        if(scores.playerScore == 5) {
-            confirm("The player has won!");
-            winner = "Player";
-        } else if(scores.computerScore == 5) {
-            confirm("The CPU has won!");
-            winner = "CPU";
-        } else {
-            winner = "nobody";
-        }
-    }
-
-    alert("Play Again?");
-    window.location.reload();
+    updateScores(result, playerChoice, computerChoice);
 }

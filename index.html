@@ -4,12 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script type="text/javascript" src="index-script.js"></script>
+    <script type="text/javascript" src="index-script.js" defer></script>
     <link type="text/css" rel="stylesheet" href="index-style.css" />
 
-    <title>Rock Paper Scissors</title>
+    <title>Rock Paper Scissors Lizard Spock</title>
 </head>
 <body>
-    <button type="button" class="button reload" onClick="window.location.reload();">Click to Play Again</button>
+    <header>
+        <h1>Rock Paper Scissors Lizard Spock</h1>
+    </header>
+    <section id="main">
+        <section id="narrator">First to score five points wins!</section>
+        <section id="player-and-cpu">
+            <section id="player">
+                <h2 id="player-h2" class="score">🧑: <span id="player-score">0</span></h2>
+                <p id="player-choice" class="choice">?</p>
+            </section>
+            <section id="cpu">
+                <h2 id="cpu-h2" class="score">🤖: <span id="cpu-score">0</span></h2>
+                <p id="cpu-choice" class="choice">?</p>
+            </section>
+        </section>
+        <section id="player-choose">
+            <button id="rock" class="choose">🪨</button>
+            <button id="paper" class="choose">📄</button>
+            <button id="scissors" class="choose">✂️</button>
+            <button id="lizard" class="choose">🦎</button>
+            <button id="spock" class="choose">🖖🏻</button>
+        </section>
+        <button type="button" id="restart">Restart</button>
+    </section>
+    <footer>
+        Copyright &copy 2023 DMortal1
+    </footer>
 </body>
 </html>
